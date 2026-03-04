@@ -14,7 +14,6 @@ export default function ResultCard({ total, totalLabel, items, shareText }: {
   shareText: string;
 }) {
   const handleShareWhatsApp = () => {
-    const url = encodeURIComponent(window.location.origin);
     const text = encodeURIComponent(
       `${shareText}\n\nDescubra o seu: ${window.location.origin}`
     );

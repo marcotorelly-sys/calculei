@@ -10,7 +10,8 @@ const FAIXAS_INSS_2026 = [
   { min: 2793.89, max: 5587.76, aliquota: 0.12 },
   { min: 5587.77, max: 7786.02, aliquota: 0.14 },
 ];
-const TETO_INSS = 7786.02;
+const _TETO_INSS = 7786.02;
+void _TETO_INSS;
 const DESCONTO_MAX_INSS = 908.86;
 
 const FAIXAS_IRRF_2026 = [
@@ -118,6 +119,7 @@ function calcularMesesTrabalhados(dataAdmissao: string, dataDemissao: string): n
   return Math.max(0, meses);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function diasNoMes(dataStr: string): number {
   const d = new Date(dataStr + 'T00:00:00');
   return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
@@ -183,7 +185,6 @@ export function calcularRescisao(input: InputRescisao): ResultadoRescisao {
   const mesesNoAno = dem.getMonth() + 1;
 
   // 1. Saldo de salário
-  const totalDiasMes = diasNoMes(input.dataDemissao);
   const saldoSalario = parseFloat(((input.salarioBruto / 30) * diasTrab).toFixed(2));
 
   // 2. Aviso prévio
