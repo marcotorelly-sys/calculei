@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import MoneyInput from '../components/MoneyInput';
@@ -58,6 +58,8 @@ export default function Rescisao() {
     });
     setResultado(res);
     setAbaAtiva('resultado');
+    // Scroll suave para o topo ao mostrar resultado
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // CTAs contextuais por tipo de rescisão

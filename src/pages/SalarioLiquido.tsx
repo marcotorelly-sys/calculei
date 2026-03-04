@@ -18,6 +18,7 @@ export default function SalarioLiquido() {
     }
     const res = calcularSalarioLiquido({ salarioBruto: salario, dependentes });
     setResultado(res);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (resultado) {
@@ -50,9 +51,10 @@ export default function SalarioLiquido() {
         <MoneyInput label="Salário bruto mensal" value={salario} onChange={setSalario} placeholder="2.500,00" />
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Número de dependentes (IR)
           </label>
+          <p className="text-white/30 text-xs mb-2">Filhos, cônjuge ou pais que você declara no IR</p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setDependentes(Math.max(0, dependentes - 1))}

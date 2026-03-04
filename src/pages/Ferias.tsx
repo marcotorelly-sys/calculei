@@ -19,6 +19,7 @@ export default function Ferias() {
     }
     const res = calcularFerias({ salarioBruto: salario, diasFerias, abonoConvertido: abono });
     setResultado(res);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (resultado) {

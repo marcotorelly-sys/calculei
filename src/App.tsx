@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { PremiumProvider } from './contexts/PremiumContext';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Rescisao from './pages/Rescisao';
 import Ferias from './pages/Ferias';
@@ -7,12 +8,10 @@ import DecimoTerceiro from './pages/DecimoTerceiro';
 import SalarioLiquido from './pages/SalarioLiquido';
 import Premium from './pages/Premium';
 
-const APP_VERSION = '2.0.0';
-
 export default function App() {
-  if (typeof window !== 'undefined') (window as any).__CALCULEI_VERSION__ = APP_VERSION;
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <PremiumProvider>
         <div className="min-h-screen bg-gray-50">
           <Routes>

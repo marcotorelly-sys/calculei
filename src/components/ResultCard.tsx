@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { formatarMoeda } from '../lib/calculos';
 
@@ -22,6 +23,7 @@ export default function ResultCard({ total, totalLabel, items, shareText, premiu
   shareText: string;
   premiumCTA?: PremiumCTA;
 }) {
+  const [copiado, setCopiado] = useState(false);
 
   const handleShareWhatsApp = () => {
     const text = encodeURIComponent(
@@ -34,6 +36,8 @@ export default function ResultCard({ total, totalLabel, items, shareText, premiu
     navigator.clipboard.writeText(
       `${shareText}\n\nDescubra o seu: https://calculei.net`
     );
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
   };
 
   return (
@@ -116,9 +120,13 @@ export default function ResultCard({ total, totalLabel, items, shareText, premiu
 
         <button
           onClick={handleCopy}
-          className="w-full bg-white/10 hover:bg-white/20 active:scale-[0.98] text-white font-medium py-3 rounded-2xl text-sm transition-all"
+          className={`w-full active:scale-[0.98] font-medium py-3 rounded-2xl text-sm transition-all ${
+            copiado
+              ? 'bg-green-500/20 text-green-300 border border-green-500/30'
+              : 'bg-white/10 hover:bg-white/20 text-white'
+          }`}
         >
-          Copiar resultado
+          {copiado ? '✓ Copiado!' : 'Copiar resultado'}
         </button>
       </div>
 

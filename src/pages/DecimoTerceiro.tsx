@@ -18,6 +18,7 @@ export default function DecimoTerceiro() {
     }
     const res = calcularDecimoTerceiro({ salarioBruto: salario, mesesTrabalhados: meses });
     setResultado(res);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   if (resultado) {
@@ -52,21 +53,24 @@ export default function DecimoTerceiro() {
           <label className="block text-sm font-medium text-gray-300 mb-2.5">
             Meses trabalhados no ano
           </label>
-          <div className="grid grid-cols-6 gap-1.5">
+          <div className="grid grid-cols-4 gap-2">
             {[...Array(12)].map((_, i) => (
               <button
                 key={i + 1}
                 onClick={() => setMeses(i + 1)}
-                className={`py-2.5 rounded-xl font-bold text-center text-sm transition-all ${
+                className={`py-3 rounded-xl font-bold text-center text-sm transition-all ${
                   meses === i + 1
                     ? 'bg-green-500 text-white shadow-lg ring-2 ring-green-400/50'
-                    : 'bg-white/10 text-white/70'
+                    : 'bg-white/10 text-white/70 hover:bg-white/15'
                 }`}
               >
                 {i + 1}
               </button>
             ))}
           </div>
+          <p className="text-white/30 text-xs mt-1">
+            {meses === 12 ? '13º integral (ano completo)' : `${meses}/12 avos do salário`}
+          </p>
         </div>
 
         {erro && (

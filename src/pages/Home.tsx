@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { usePremium } from '../contexts/PremiumContext';
 
 const calculadoras = [
   {
@@ -29,11 +30,25 @@ const calculadoras = [
 ];
 
 export default function Home() {
+  const { isPremium } = usePremium();
+
   return (
     <div className="min-h-dvh bg-gradient-to-b from-blue-900 to-blue-800">
       <div className="mx-auto max-w-lg">
+        {/* Header com badge Premium */}
+        {isPremium && (
+          <div className="px-4 pt-3 flex justify-end">
+            <Link
+              to="/premium"
+              className="text-[10px] bg-amber-500/20 text-amber-300 px-3 py-1 rounded-full font-semibold flex items-center gap-1"
+            >
+              👑 Premium ativo
+            </Link>
+          </div>
+        )}
+
         {/* Hero */}
-        <div className="px-4 pt-10 pb-6 text-center">
+        <div className={`px-4 ${isPremium ? 'pt-4' : 'pt-10'} pb-6 text-center`}>
           <div className="text-5xl mb-3">💰</div>
           <h1 className="text-white text-3xl font-black mb-2">Calculei</h1>
           <p className="text-blue-200 text-base leading-relaxed max-w-xs mx-auto">
@@ -65,7 +80,9 @@ export default function Home() {
                     {calc.desc}
                   </p>
                 </div>
-                <span className="text-white/40 text-xl flex-shrink-0">›</span>
+                <svg className="w-5 h-5 text-white/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
               </div>
               {calc.featured && (
                 <div className="mt-2.5 bg-white/20 rounded-full px-3 py-1 inline-block">
@@ -88,8 +105,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Premium teaser — emocional */}
-        <div className="px-4 pb-6">
+        {/* Premium teaser — só para não-premium */}
+        {!isPremium && (<div className="px-4 pb-6">
           <Link to="/premium" className="block bg-gradient-to-br from-amber-500/15 to-orange-600/15 border border-amber-500/25 rounded-2xl p-5 transition-all hover:from-amber-500/25 hover:to-orange-600/25 active:scale-[0.98]">
             <div className="text-center space-y-2">
               <p className="text-amber-100 font-black text-base leading-snug">
@@ -104,7 +121,7 @@ export default function Home() {
               </div>
             </div>
           </Link>
-        </div>
+        </div>)}
 
         {/* Footer */}
         <footer className="text-center text-white/30 text-xs pb-8 px-4 space-y-1">

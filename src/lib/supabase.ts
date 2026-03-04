@@ -12,7 +12,7 @@ export const supabase = SUPABASE_URL && SUPABASE_ANON_KEY
 // Retorna: true (premium), false (não premium), null (sem Supabase/offline)
 export async function verificarPremium(email: string): Promise<boolean | null> {
   if (!supabase) {
-    console.warn('[Calculei] Supabase não configurado — modo offline');
+    // Supabase não configurado — modo offline
     return null; // null = sem backend, não sobrescrever cache
   }
 
@@ -52,7 +52,7 @@ export async function registrarIntencao(email: string): Promise<string | null> {
       .single();
 
     if (error) {
-      console.error('[Calculei] Erro ao registrar intenção:', error);
+      // Erro ao registrar intenção
       return null;
     }
 
