@@ -1,1 +1,37 @@
 @import "tailwindcss";
+
+/* Mobile-first global fixes */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix iOS date input styling */
+input[type="date"] {
+  -webkit-appearance: none;
+  min-height: 48px;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+/* Ensure proper touch targets */
+button, a, input, select {
+  min-height: 44px;
+}
+
+/* Smooth scrolling */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+select option {
+  color: #000;
+}
