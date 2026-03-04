@@ -15,12 +15,6 @@ interface PremiumCTA {
   alerta?: string;
 }
 
-const ctaDefault: PremiumCTA = {
-  emoji: '🔒',
-  titulo: 'Relatório completo em PDF',
-  texto: 'Compare cenários lado a lado, confira o checklist do TRCT e tenha um relatório profissional para levar ao RH.',
-};
-
 export default function ResultCard({ total, totalLabel, items, shareText, premiumCTA }: {
   total: number;
   totalLabel: string;
@@ -28,7 +22,6 @@ export default function ResultCard({ total, totalLabel, items, shareText, premiu
   shareText: string;
   premiumCTA?: PremiumCTA;
 }) {
-  const cta = premiumCTA || ctaDefault;
 
   const handleShareWhatsApp = () => {
     const text = encodeURIComponent(
@@ -77,35 +70,37 @@ export default function ResultCard({ total, totalLabel, items, shareText, premiu
       </div>
 
       {/* Alerta contextual (se houver) */}
-      {cta.alerta && (
+      {premiumCTA?.alerta && (
         <div className="bg-red-500/15 border border-red-500/30 rounded-2xl p-4 text-center">
           <p className="text-red-200 text-sm font-bold leading-relaxed">
-            {cta.alerta}
+            {premiumCTA.alerta}
           </p>
         </div>
       )}
 
-      {/* Premium CTA — contextual */}
-      <div className="bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/30 rounded-2xl p-5">
-        <div className="text-center space-y-3">
-          <span className="text-3xl">{cta.emoji}</span>
-          <p className="text-amber-100 font-black text-base leading-snug">
-            {cta.titulo}
-          </p>
-          <p className="text-amber-100/60 text-xs leading-relaxed max-w-xs mx-auto">
-            {cta.texto}
-          </p>
-          <Link
-            to="/premium"
-            className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm py-3 px-6 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-amber-500/25"
-          >
-            Quero conferir — R$ 4,90/mês
-          </Link>
-          <p className="text-amber-200/40 text-[10px]">
-            Cancele quando quiser. Sem compromisso.
-          </p>
+      {/* Premium CTA — contextual (só para não-premium) */}
+      {premiumCTA && (
+        <div className="bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/30 rounded-2xl p-5">
+          <div className="text-center space-y-3">
+            <span className="text-3xl">{premiumCTA.emoji}</span>
+            <p className="text-amber-100 font-black text-base leading-snug">
+              {premiumCTA.titulo}
+            </p>
+            <p className="text-amber-100/60 text-xs leading-relaxed max-w-xs mx-auto">
+              {premiumCTA.texto}
+            </p>
+            <Link
+              to="/premium"
+              className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-sm py-3 px-6 rounded-xl transition-all active:scale-[0.98] shadow-lg shadow-amber-500/25"
+            >
+              Quero conferir — R$ 4,90/mês
+            </Link>
+            <p className="text-amber-200/40 text-[10px]">
+              Cancele quando quiser. Sem compromisso.
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Botões de ação */}
       <div className="space-y-3">

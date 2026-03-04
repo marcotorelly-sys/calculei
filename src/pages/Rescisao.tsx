@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import MoneyInput from '../components/MoneyInput';
 import ResultCard from '../components/ResultCard';
+import ComparadorCenarios from '../components/ComparadorCenarios';
+import ChecklistTRCT from '../components/ChecklistTRCT';
+import BotaoRelatorioPDF from '../components/RelatorioPDF';
+import { usePremium } from '../contexts/PremiumContext';
 import {
   calcularRescisao, formatarMoeda, labelTipoRescisao,
   type TipoRescisao, type ResultadoRescisao
@@ -16,6 +20,7 @@ const tipos: { value: TipoRescisao; label: string; desc: string }[] = [
 ];
 
 export default function Rescisao() {
+  const { isPremium } = usePremium();
   const [salario, setSalario] = useState(0);
   const [dataAdmissao, setDataAdmissao] = useState('');
   const [dataDemissao, setDataDemissao] = useState('');
@@ -23,6 +28,7 @@ export default function Rescisao() {
   const [feriasVencidas, setFeriasVencidas] = useState(false);
   const [resultado, setResultado] = useState<ResultadoRescisao | null>(null);
   const [erro, setErro] = useState('');
+  const [abaAtiva, setAbaAtiva] = useState<'resultado' | 'comparador' | 'checklist'>('resultado');
 
   const calcular = () => {
     setErro('');
@@ -51,6 +57,7 @@ export default function Rescisao() {
       feriasVencidas,
     });
     setResultado(res);
+    setAbaAtiva('resultado');
   };
 
   // CTAs contextuais por tipo de rescisão
@@ -122,7 +129,7 @@ export default function Rescisao() {
 
     const shareText = `Fiz uma simulação de rescisão e descobri que tenho direito a receber ${formatarMoeda(resultado.totalLiquido)}! (${labelTipoRescisao(resultado.tipoRescisao)}, ${resultado.mesesTrabalhados} meses)`;
 
-    // Simular cenários alternativos para teaser trancado
+    // Cenários alternativos para teaser trancado (só se NÃO premium)
     const outrosCenarios = (['sem_justa_causa', 'pedido_demissao', 'acordo', 'justa_causa'] as TipoRescisao[])
       .filter(t => t !== resultado.tipoRescisao)
       .slice(0, 2);
@@ -135,41 +142,101 @@ export default function Rescisao() {
             <span className="text-white/50 text-sm">
               {labelTipoRescisao(resultado.tipoRescisao)} · {resultado.mesesTrabalhados} meses
             </span>
+            {isPremium && (
+              <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-semibold ml-auto">
+                👑 Premium
+              </span>
+            )}
           </div>
 
-          <ResultCard
-            total={resultado.totalLiquido}
-            totalLabel="Você tem direito a receber"
-            items={items}
-            shareText={shareText}
-            premiumCTA={premiumCTAs[resultado.tipoRescisao]}
-          />
-
-          {/* Teaser comparação de cenários (trancado) */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 relative overflow-hidden">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-base">🔒</span>
-              <h3 className="text-white/80 text-sm font-bold">Comparar cenários</h3>
-              <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-semibold ml-auto">Premium</span>
-            </div>
-            <div className="space-y-2 opacity-50 blur-[2px] select-none pointer-events-none">
-              {outrosCenarios.map((t) => (
-                <div key={t} className="flex justify-between items-center bg-white/5 rounded-xl px-3 py-2.5">
-                  <span className="text-white/70 text-xs">{labelTipoRescisao(t)}</span>
-                  <span className="text-white font-mono text-sm">R$ •.•••,••</span>
-                </div>
+          {/* Abas Premium */}
+          {isPremium && (
+            <div className="flex gap-1 bg-white/5 rounded-xl p-1">
+              {([
+                { key: 'resultado' as const, label: '📊 Resultado' },
+                { key: 'comparador' as const, label: '⚖️ Cenários' },
+                { key: 'checklist' as const, label: '✅ Checklist' },
+              ]).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setAbaAtiva(key)}
+                  className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                    abaAtiva === key
+                      ? 'bg-white/15 text-white'
+                      : 'text-white/40 hover:text-white/60'
+                  }`}
+                >
+                  {label}
+                </button>
               ))}
             </div>
-            <Link
-              to="/premium"
-              className="mt-3 block text-center text-amber-400 text-xs font-bold hover:text-amber-300 transition-colors"
-            >
-              Desbloquear comparação →
-            </Link>
-          </div>
+          )}
+
+          {/* Conteúdo da aba ativa */}
+          {abaAtiva === 'resultado' && (
+            <>
+              <ResultCard
+                total={resultado.totalLiquido}
+                totalLabel="Você tem direito a receber"
+                items={items}
+                shareText={shareText}
+                premiumCTA={isPremium ? undefined : premiumCTAs[resultado.tipoRescisao]}
+              />
+
+              {/* Teaser comparação de cenários (trancado) — só para não-premium */}
+              {!isPremium && (
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 relative overflow-hidden">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-base">🔒</span>
+                    <h3 className="text-white/80 text-sm font-bold">Comparar cenários</h3>
+                    <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-semibold ml-auto">Premium</span>
+                  </div>
+                  <div className="space-y-2 opacity-50 blur-[2px] select-none pointer-events-none">
+                    {outrosCenarios.map((t) => (
+                      <div key={t} className="flex justify-between items-center bg-white/5 rounded-xl px-3 py-2.5">
+                        <span className="text-white/70 text-xs">{labelTipoRescisao(t)}</span>
+                        <span className="text-white font-mono text-sm">R$ •.•••,••</span>
+                      </div>
+                    ))}
+                  </div>
+                  <Link
+                    to="/premium"
+                    className="mt-3 block text-center text-amber-400 text-xs font-bold hover:text-amber-300 transition-colors"
+                  >
+                    Desbloquear comparação →
+                  </Link>
+                </div>
+              )}
+
+              {/* Botão PDF — só para premium */}
+              {isPremium && (
+                <BotaoRelatorioPDF
+                  resultado={resultado}
+                  salarioBruto={salario}
+                  dataAdmissao={dataAdmissao}
+                  dataDemissao={dataDemissao}
+                  feriasVencidas={feriasVencidas}
+                />
+              )}
+            </>
+          )}
+
+          {abaAtiva === 'comparador' && isPremium && (
+            <ComparadorCenarios
+              salarioBruto={salario}
+              dataAdmissao={dataAdmissao}
+              dataDemissao={dataDemissao}
+              tipoAtual={resultado.tipoRescisao}
+              feriasVencidas={feriasVencidas}
+            />
+          )}
+
+          {abaAtiva === 'checklist' && isPremium && (
+            <ChecklistTRCT resultado={resultado} />
+          )}
 
           {/* Seguro-desemprego */}
-          {resultado.temDireitoSeguroDesemprego && (
+          {resultado.temDireitoSeguroDesemprego && abaAtiva === 'resultado' && (
             <div className="bg-yellow-500/20 border border-yellow-500/30 rounded-2xl p-4">
               <p className="text-yellow-200 font-bold text-sm">📋 Seguro-desemprego</p>
               <p className="text-yellow-100 text-sm mt-1 leading-relaxed">
