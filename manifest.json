@@ -1,12 +1,14 @@
 {
   "name": "Calculei - Seus Direitos Trabalhistas",
   "short_name": "Calculei",
-  "description": "Descubra exatamente quanto voce tem direito a receber",
+  "description": "Descubra exatamente quanto você tem direito a receber. Calculadora CLT gratuita.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1e3a5f",
   "theme_color": "#1e40af",
   "orientation": "portrait",
+  "categories": ["finance", "utilities"],
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "/icon-192.png",
